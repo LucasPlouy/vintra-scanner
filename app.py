@@ -1,44 +1,33 @@
 import streamlit as st
 import requests
 
-st.title("🧠 VINTRA Scanner (API Full)")
+st.set_page_config(page_title="VINTRA Scanner", layout="wide")
+st.title("🧠 VINTRA Scanner (v1)")
 
-query = st.text_input("🔍 Recherche Vinted", "ralph lauren")
+query = st.text_input("🔍 Recherche Vinted", "pull ralph homme")
 
 if st.button("Scanner"):
-    url = "https://www.vinted.fr/api/v2/catalog/items"
-    params = {
-        "search_text": query,
-        "catalog_ids": "1904",  # vêtements hommes
-        "per_page": 20,
-        "page": 1
-    }
+    with st.spinner("Recherche en cours..."):
+        try:
+            res = requests.get(f"https://vintra-backend.repl.co/api/search?q={query}")
+            data = res.json()
 
-    headers = {
-        "User-Agent": "Mozilla/5.0",
-        "Accept": "application/json"
-    }
+            items = data.get("results", [])
+            if not items:
+                st.warning("Aucune annonce trouvée.")
+            else:
+                for item in items:
+                    titre = item["title"]
+                    lien = item["url"]
+                    prix = item["price"]
+                    marque = item["brand"]
+                    score = item["score"]
 
-    try:
-        res = requests.get(url, headers=headers, params=params)
-        data = res.json()
-
-        items = data.get("items", [])
-        if not items:
-            st.warning("Aucune annonce trouvée.")
-        else:
-            for item in items:
-                titre = item.get("title", "Titre inconnu")
-                prix = f"{item.get('price', 0)} €"
-                url_item = f"https://www.vinted.fr{item.get('url')}"
-                marque = item.get("brand_title", "Marque inconnue")
-                score = "✅ À cop" if "ralph" in titre.lower() else "🟡 À voir"
-
-                st.markdown(f"### [{titre}]({url_item})")
-                st.write(f"🏷️ Marque : {marque}")
-                st.write(f"💰 Prix : {prix}")
-                st.write(f"🧠 Score IA : {score}")
-                st.markdown("---")
-    except Exception as e:
-        st.error(f"Erreur : {e}")
+                    st.markdown(f"### [{titre}]({lien})")
+                    st.write(f"🏷️ Marque : {marque}")
+                    st.write(f"💰 Prix : {prix}")
+                    st.write(f"🧠 Score IA : {score}")
+                    st.markdown("---")
+        except Exception as e:
+            st.error(f"Erreur lors de la recherche : {e}")
 
