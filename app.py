@@ -34,5 +34,11 @@ if st.button("Scanner"):
                 marque = item.get("brand_title", "Marque inconnue")
                 score = "✅ À cop" if "ralph" in titre.lower() else "🟡 À voir"
 
-                st.markdown(f"### [{titre}]({u)
+                st.markdown(f"### [{titre}]({url_item})")
+                st.write(f"🏷️ Marque : {marque}")
+                st.write(f"💰 Prix : {prix}")
+                st.write(f"🧠 Score IA : {score}")
+                st.markdown("---")
+    except Exception as e:
+        st.error(f"Erreur : {e}")
 
