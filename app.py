@@ -9,7 +9,7 @@ query = st.text_input("🔍 Recherche Vinted", "pull ralph homme")
 if st.button("Scanner"):
     with st.spinner("Recherche en cours..."):
         try:
-            res = requests.get(f"https://vintra-backend.repl.co/api/search?q={query}")
+            res = requests.get(f"https://vintra-backend-api.lucasplouy.repl.co/api/search?q={query}")
             data = res.json()
 
             items = data.get("results", [])
@@ -30,4 +30,3 @@ if st.button("Scanner"):
                     st.markdown("---")
         except Exception as e:
             st.error(f"Erreur lors de la recherche : {e}")
-
